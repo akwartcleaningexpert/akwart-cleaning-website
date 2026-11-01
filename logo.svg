@@ -1,9 +1,31 @@
-<svg width="420" height="120" viewBox="0 0 420 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="680" height="220" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">A-Kwart Cleaning Expert Ltd</title>
-  <desc id="desc">Clean, blue and gold logo for the A-Kwart Cleaning Expert Ltd brand.</desc>
-  <rect x="8" y="12" width="96" height="96" rx="22" fill="#123B78"/>
-  <path d="M36 83 L54 38 L72 83 H65 L62 76 H46 L43 83 H36 Z M48 52 H60 L55 64 H53 L48 52 Z" fill="#F4B942"/>
-  <path d="M78 28 H88 L90 88 H80 L78 28 Z" fill="#F4B942" opacity="0.9"/>
-  <text x="122" y="58" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="900" letter-spacing="1.6" fill="#123B78">A-KWART</text>
-  <text x="125" y="89" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" letter-spacing="3.4" fill="#F4B942">CLEANING</text>
+  <desc id="desc">Modern premium logo for A-Kwart Cleaning Expert Ltd in blue and gold.</desc>
+  <defs>
+    <linearGradient id="gradBlue" x1="0" x2="1">
+      <stop offset="0%" stop-color="#123B78"/>
+      <stop offset="100%" stop-color="#1F5DA9"/>
+    </linearGradient>
+    <linearGradient id="gradGold" x1="0" x2="1">
+      <stop offset="0%" stop-color="#F7D777"/>
+      <stop offset="100%" stop-color="#F4B942"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(20 16)">
+    <rect x="0" y="0" width="160" height="160" rx="38" fill="url(#gradBlue)"/>
+    <path d="M38 98 L80 52 L122 98 H103 L96 90 H64 L57 98 H38 Z" fill="url(#gradGold)"/>
+    <path d="M64 44 L80 28 L96 44 L80 34 Z" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M57 110 L80 76 L103 110 H57 Z" fill="#FFFFFF" opacity="0.92"/>
+    <path d="M109 118 L126 85 L138 118 H109 Z" fill="#F4B942" opacity="0.94"/>
+    <path d="M98 20 L104 32 L116 38 L104 44 L98 56 L92 44 L80 38 L92 32 Z" fill="#F7D777"/>
+    <circle cx="126" cy="52" r="8" fill="#F7D777"/>
+  </g>
+
+  <g transform="translate(220 46)">
+    <text x="0" y="52" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" letter-spacing="1.2" fill="#123B78">A-KWART</text>
+    <rect x="4" y="72" width="220" height="6" rx="3" fill="#F4B942"/>
+    <text x="0" y="118" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800" letter-spacing="5.8" fill="#1F5DA9">CLEANING</text>
+    <text x="0" y="150" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="1.2" fill="#5B6F86">EXPERT LTD</text>
+  </g>
 </svg>
