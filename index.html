@@ -21,6 +21,7 @@
         --white: #ffffff;
         --card: #f8fbff;
         --shadow: 0 18px 40px rgba(18, 59, 120, 0.10);
+        --success: #1bbf7a;
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,6 +82,7 @@
         border-radius: 8px;
         padding: 14px 22px;
         transition: 0.2s ease;
+        border: 2px solid transparent;
       }
       .btn:hover {
         background: var(--gold-dark);
@@ -93,7 +95,11 @@
       .btn.outline {
         background: transparent;
         color: var(--white);
-        border: 2px solid rgba(255,255,255,0.9);
+        border-color: rgba(255,255,255,0.8);
+      }
+      .btn.dark {
+        background: var(--blue);
+        color: var(--white);
       }
 
       .hero {
@@ -327,6 +333,111 @@
         border: 1px solid rgba(18,59,120,0.05);
       }
 
+      .process {
+        background: #f3f8ff;
+      }
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+      .step {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 16px;
+        padding: 28px 22px;
+      }
+      .step-number {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 900;
+        margin-bottom: 12px;
+      }
+      .step h3 {
+        color: var(--blue);
+        margin-bottom: 8px;
+      }
+      .step p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .testimonials {
+        background: var(--white);
+      }
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+      .testimonial {
+        background: var(--card);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        padding: 24px;
+      }
+      .stars {
+        color: #f9b934;
+        letter-spacing: 0.12em;
+        margin-bottom: 16px;
+      }
+      .testimonial p {
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--blue);
+        color: var(--white);
+        font-weight: 700;
+      }
+      .person strong {
+        display: block;
+        color: var(--dark);
+      }
+      .person span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .faq {
+        background: #f9fbff;
+      }
+      .faq-wrap {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      details {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 14px;
+      }
+      details summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--blue);
+      }
+      details p {
+        color: var(--muted);
+        margin-top: 10px;
+      }
+
       .cta-panel {
         background: linear-gradient(135deg, var(--blue), var(--blue-2));
         color: var(--white);
@@ -370,6 +481,36 @@
         overflow-wrap: anywhere;
       }
 
+      .contact-form-wrap {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 10px 20px rgba(15,23,42,0.04);
+      }
+      form {
+        display: grid;
+        gap: 16px;
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      input, textarea {
+        width: 100%;
+        border: 1px solid rgba(18,59,120,0.14);
+        background: #f9fbff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font: inherit;
+        color: var(--dark);
+      }
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
       footer {
         background: #0b2041;
         color: rgba(255,255,255,0.9);
@@ -406,6 +547,8 @@
       @media (max-width: 900px) {
         .hero-wrap,
         .about-grid,
+        .process-grid,
+        .testimonial-grid,
         .cta-panel {
           grid-template-columns: 1fr;
           display: grid;
@@ -415,6 +558,9 @@
       @media (max-width: 700px) {
         .hero { padding-top: 72px; }
         section { padding: 62px 0; }
+        .field-row {
+          grid-template-columns: 1fr;
+        }
         .cta-panel { display: block; }
         .cta-panel .btn { margin-top: 18px; }
       }
@@ -428,6 +574,7 @@
           <a href="#home">Home</a>
           <a href="#about">About</a>
           <a href="#services">Services</a>
+          <a href="#testimonials">Reviews</a>
           <a href="#contact">Contact</a>
           <a class="btn" href="#contact">Book Now</a>
         </nav>
@@ -636,6 +783,107 @@
         </div>
       </section>
 
+      <section class="process">
+        <div class="container">
+          <div class="section-heading">
+            <h2>How It Works</h2>
+            <p>Simple, straightforward service from first call to final sparkle.</p>
+          </div>
+
+          <div class="process-grid">
+            <div class="step">
+              <div class="step-number">1</div>
+              <h3>Request a Quote</h3>
+              <p>Tell us about your property and the cleaning you need, and we���ll share a suitable plan.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <h3>Choose Your Schedule</h3>
+              <p>Select a date and time that works for you, including one-off or recurring cleans.</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <h3>Enjoy a Fresh Space</h3>
+              <p>Our team handles the work with care, attention to detail and reliable service.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials" id="testimonials">
+        <div class="container">
+          <div class="section-heading">
+            <h2>What Our Clients Say</h2>
+            <p>Real feedback from customers who trust A-Kwart with their homes and workplaces.</p>
+          </div>
+
+          <div class="testimonial-grid">
+            <div class="testimonial">
+              <div class="stars">★★★★★</div>
+              <p>“Absolutely brilliant service. The team was punctual, professional and my kitchen looked spotless afterwards.”</p>
+              <div class="person">
+                <div class="avatar">S</div>
+                <div>
+                  <strong>Sophie M.</strong>
+                  <span>Homeowner</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial">
+              <div class="stars">★★★★★</div>
+              <p>“We use A-Kwart for regular office cleaning and they’re always reliable, courteous and thorough.”</p>
+              <div class="person">
+                <div class="avatar">J</div>
+                <div>
+                  <strong>James K.</strong>
+                  <span>Office Manager</span>
+                </div>
+              </div>
+            </div>
+            <div class="testimonial">
+              <div class="stars">★★★★★</div>
+              <p>“Our end-of-tenancy clean was fantastic. It made the property ready for handover and exceeded expectations.”</p>
+              <div class="person">
+                <div class="avatar">A</div>
+                <div>
+                  <strong>Amelia T.</strong>
+                  <span>Landlord</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq">
+        <div class="container faq-wrap">
+          <div class="section-heading">
+            <h2>Frequently Asked Questions</h2>
+            <p>Helpful answers to common questions about our cleaning services.</p>
+          </div>
+
+          <details open>
+            <summary>Do you offer regular cleaning schedules?</summary>
+            <p>Yes. We provide recurring cleaning plans for homes and businesses, with flexible weekly or fortnightly options.</p>
+          </details>
+
+          <details>
+            <summary>Are your cleaners insured and trustworthy?</summary>
+            <p>We take customer trust seriously and provide a professional, safety-conscious service with checks in place for reassurance.</p>
+          </details>
+
+          <details>
+            <summary>Do you clean offices and commercial spaces?</summary>
+            <p>Absolutely. We offer commercial and office cleaning services tailored to your working hours and business requirements.</p>
+          </details>
+
+          <details>
+            <summary>Can I request a quote quickly?</summary>
+            <p>Yes. Contact us by phone or WhatsApp and we’ll be happy to provide a free quotation based on your needs.</p>
+          </details>
+        </div>
+      </section>
+
       <section class="cta-section">
         <div class="container">
           <div class="cta-panel">
@@ -655,7 +903,7 @@
             <p>We’d love to hear about your cleaning requirements.</p>
           </div>
 
-          <div class="contact-grid">
+          <div class="contact-grid" style="margin-bottom: 26px;">
             <div class="contact-card">
               <h3>📞 Phone</h3>
               <a href="tel:+447858015558">07858 015558</a>
@@ -672,6 +920,21 @@
               <h3>📍 Location</h3>
               <p>Slough, Berkshire, United Kingdom</p>
             </div>
+          </div>
+
+          <div class="contact-form-wrap">
+            <form action="mailto:2aa.kwart@gmail.com" method="post" enctype="text/plain">
+              <div class="field-row">
+                <input type="text" name="name" placeholder="Your name" aria-label="Your name" />
+                <input type="email" name="email" placeholder="Your email" aria-label="Your email" />
+              </div>
+              <div class="field-row">
+                <input type="tel" name="phone" placeholder="Your phone number" aria-label="Your phone number" />
+                <input type="text" name="service" placeholder="Service required" aria-label="Service required" />
+              </div>
+              <textarea name="message" placeholder="Tell us about your cleaning requirements..." aria-label="Tell us about your cleaning requirements"></textarea>
+              <button class="btn dark" type="submit">Send Enquiry</button>
+            </form>
           </div>
         </div>
       </section>
