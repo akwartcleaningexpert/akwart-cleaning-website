@@ -1,462 +1,871 @@
 <!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>A-Kwart Cleaning Expert | Professional Cleaning Services</title>
-    <meta
-      name="description"
-      content="A-Kwart Cleaning Expert offers reliable residential, commercial, and deep cleaning services. Trusted local cleaning professionals for homes and businesses."
-    />
-    <style>
-      :root {
-        --bg: #f5f7fb;
-        --panel: #ffffff;
-        --primary: #1d4ed8;
-        --primary-dark: #163ea8;
-        --accent: #f59e0b;
-        --text: #1f2937;
-        --muted: #6b7280;
-        --border: #e5e7eb;
-        --success: #10b981;
-      }
 
-      * { box-sizing: border-box; }
+<head>
 
-      html {
-        scroll-behavior: smooth;
-      }
+<meta charset="UTF-8">
 
-      body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
-      }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+<title>A-Kwart Cleaning Expert Ltd | Professional Cleaning Services</title>
 
-      .container {
-        width: min(1120px, calc(100% - 32px));
-        margin: 0 auto;
-      }
+<meta name="description" content="A-Kwart Cleaning Expert Ltd provides professional domestic, commercial, office, school, carpet, window and end-of-tenancy cleaning in Slough and across England and Wales.">
 
-      header {
-        background: rgba(255, 255, 255, 0.9);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        backdrop-filter: blur(10px);
-      }
+<meta name="theme-color" content="#123b78">
 
-      .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 78px;
-      }
+<style>
 
-      .brand {
-        font-size: 1.35rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-      }
+:root {
 
-      .brand span {
-        color: var(--primary);
-      }
+  --blue: #123b78;
 
-      nav {
-        display: flex;
-        gap: 22px;
-        align-items: center;
-        color: var(--muted);
-        font-weight: 600;
-      }
+  --light-blue: #eaf3ff;
 
-      .btn {
-        display: inline-block;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 999px;
-        padding: 0.9rem 1.4rem;
-        font-size: 0.96rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.2s ease;
-      }
+  --gold: #f4b942;
 
-      .btn:hover {
-        background: var(--primary-dark);
-      }
+  --dark: #17243a;
 
-      .btn.secondary {
-        background: white;
-        color: var(--primary);
-        border: 1px solid var(--border);
-      }
+  --muted: #64748b;
 
-      .hero {
-        background: linear-gradient(135deg, #eff6ff, #f8fafc 45%, #ecfeff);
-        padding: 72px 0 52px;
-      }
+  --white: #ffffff;
 
-      .hero-grid {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 32px;
-        align-items: center;
-      }
+}
 
-      .eyebrow {
-        display: inline-block;
-        background: #dbeafe;
-        color: var(--primary);
-        padding: 0.45rem 0.8rem;
-        border-radius: 999px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        margin-bottom: 14px;
-      }
+* {
 
-      h1 {
-        font-size: clamp(2.6rem, 4vw, 4.2rem);
-        line-height: 1.1;
-        margin: 0 0 18px;
-      }
+  box-sizing: border-box;
 
-      .lead {
-        font-size: 1.08rem;
-        color: var(--muted);
-        max-width: 620px;
-        margin-bottom: 28px;
-      }
+  margin: 0;
 
-      .cta-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin-bottom: 28px;
-      }
+  padding: 0;
 
-      .stats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 28px;
-      }
+}
 
-      .stat {
-        min-width: 120px;
-      }
+html {
 
-      .stat strong {
-        display: block;
-        font-size: 1.7rem;
-        color: var(--primary-dark);
-      }
+  scroll-behavior: smooth;
 
-      .stat span {
-        color: var(--muted);
-        font-size: 0.88rem;
-      }
+}
 
-      .hero-card {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 24px;
-        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
-      }
+body {
 
-      .mini-card {
-        background: linear-gradient(180deg, #eff6ff, #ffffff);
-        border-radius: 18px;
-        border: 1px solid #dbeafe;
-        padding: 18px;
-        margin-top: 20px;
-      }
+  font-family: Arial, Helvetica, sans-serif;
 
-      .check-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: grid;
-        gap: 10px;
-      }
+  color: var(--dark);
 
-      .check-list li::before {
-        content: "✓";
-        color: var(--success);
-        font-weight: 700;
-        margin-right: 8px;
-      }
+  line-height: 1.6;
 
-      section {
-        padding: 72px 0;
-      }
+  background: #f8fbff;
 
-      .section-title {
-        font-size: clamp(1.9rem, 3vw, 3rem);
-        margin: 0 0 12px;
-      }
+}
 
-      .section-subtitle {
-        color: var(--muted);
-        font-size: 1.04rem;
-        margin: 0 0 28px;
-      }
+a {
 
-      .services-grid,
-      .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 22px;
-      }
+  text-decoration: none;
 
-      .service,
-      .feature {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 24px;
-      }
+}
 
-      .icon {
-        width: 52px;
-        height: 52px;
-        display: grid;
-        place-items: center;
-        background: #dbeafe;
-        color: var(--primary);
-        border-radius: 14px;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 18px;
-      }
+header {
 
-      .service h3,
-      .feature h3 {
-        margin: 0 0 10px;
-        font-size: 1.25rem;
-      }
+  background: white;
 
-      .service p,
-      .feature p {
-        margin: 0;
-        color: var(--muted);
-      }
+  padding: 16px 6%;
 
-      .about {
-        background: #0f172a;
-        color: white;
-      }
+  display: flex;
 
-      .about-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 26px;
-        align-items: center;
-      }
+  justify-content: space-between;
 
-      .about-box {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 20px;
-        padding: 28px;
-      }
+  align-items: center;
 
-      .about-box p {
-        color: rgba(255,255,255,0.78);
-      }
+  position: sticky;
 
-      .cta-panel {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border-radius: 24px;
-        padding: 32px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 24px;
-      }
+  top: 0;
 
-      .cta-panel .btn {
-        background: white;
-        color: var(--primary-dark);
-      }
+  z-index: 100;
 
-      footer {
-        background: #020817;
-        color: rgba(255,255,255,0.8);
-        padding: 26px 0;
-      }
+  box-shadow: 0 2px 12px #00000012;
 
-      .footer-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        flex-wrap: wrap;
-      }
+}
 
-      @media (max-width: 880px) {
-        .hero-grid,
-        .about-grid,
-        .services-grid,
-        .feature-grid {
-          grid-template-columns: 1fr;
-        }
+.logo {
 
-        nav {
-          display: none;
-        }
+  color: var(--blue);
 
-        .cta-panel {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="container nav">
-        <div class="brand"><span>A-Kwart</span> Cleaning Expert</div>
-        <nav>
-          <a href="#services">Services</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-          <a class="btn" href="#contact">Book a Service</a>
-        </nav>
-      </div>
-    </header>
+  font-size: 22px;
 
-    <main>
-      <section class="hero">
-        <div class="container hero-grid">
-          <div>
-            <div class="eyebrow">Trusted Cleaning Professionals</div>
-            <h1>Fresh spaces. Reliable care. Exceptional results.</h1>
-            <p class="lead">
-              A-Kwart Cleaning Expert helps homes and businesses stay spotless, healthy,
-              and welcoming with professional cleaning solutions tailored to your schedule.
-            </p>
-            <div class="cta-row">
-              <a class="btn" href="#contact">Get a Free Quote</a>
-              <a class="btn secondary" href="#services">Explore Services</a>
-            </div>
-            <div class="stats">
-              <div class="stat">
-                <strong>500+</strong>
-                <span>Happy clients</span>
-              </div>
-              <div class="stat">
-                <strong>8+ yrs</strong>
-                <span>Experience</span>
-              </div>
-              <div class="stat">
-                <strong>24/7</strong>
-                <span>Support</span>
-              </div>
-            </div>
-          </div>
+  font-weight: 900;
 
-          <div class="hero-card">
-            <h2>Why choose us?</h2>
-            <ul class="check-list">
-              <li>Residential and commercial cleaning</li>
-              <li>Experienced and vetted cleaning team</li>
-              <li>Eco-conscious cleaning products</li>
-              <li>Flexible scheduling and custom plans</li>
-              <li>Attention to detail and consistent quality</li>
-            </ul>
-            <div class="mini-card">
-              <strong>Special Offer</strong><br />
-              Book a recurring service and enjoy a discounted cleaning plan.
-            </div>
-          </div>
-        </div>
-      </section>
+}
 
-      <section id="services">
-        <div class="container">
-          <h2 class="section-title">Our Services</h2>
-          <p class="section-subtitle">
-            Professional cleaning solutions designed to keep every space sparkling and comfortable.
-          </p>
+.logo span {
 
-          <div class="services-grid">
-            <article class="service">
-              <div class="icon">🏠</div>
-              <h3>Home Cleaning</h3>
-              <p>Routine cleaning for kitchens, bathrooms, bedrooms, and living areas with meticulous care.</p>
-            </article>
-            <article class="service">
-              <div class="icon">🏢</div>
-              <h3>Office Cleaning</h3>
-              <p>Dependable cleaning services for commercial spaces to boost productivity and maintain professional standards.</p>
-            </article>
-            <article class="service">
-              <div class="icon">✨</div>
-              <h3>Deep Cleaning</h3>
-              <p>Thorough cleaning for hard-to-reach spots, built-up grime, and refreshes that make a visible difference.</p>
-            </article>
-          </div>
-        </div>
-      </section>
+  color: var(--gold);
 
-      <section id="about" class="about">
-        <div class="container about-grid">
-          <div class="about-box">
-            <h2 class="section-title" style="color:white;">About A-Kwart Cleaning Expert</h2>
-            <p>
-              A-Kwart Cleaning Expert is dedicated to helping clients enjoy cleaner, healthier,
-              and more comfortable spaces. From home cleaning to office maintenance, we focus on
-              reliability, transparency, and exceptional results.
-            </p>
-          </div>
+}
 
-          <div class="about-box">
-            <h3>What makes us different?</h3>
-            <div class="feature-grid" style="grid-template-columns:1fr; margin-top: 18px;">
-              <div class="feature" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.08); color: white;">
-                <h3 style="color:white;">Tailored Service</h3>
-                <p>We personalize our cleaning plan around your needs, preferences, and schedule.</p>
-              </div>
-              <div class="feature" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.08); color: white;">
-                <h3 style="color:white;">Quality Guarantee</h3>
-                <p>We stand behind our work with consistent service and a commitment to excellence.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+nav {
 
-      <section id="contact">
-        <div class="container">
-          <div class="cta-panel">
-            <div>
-              <h2 style="margin:0 0 8px; font-size: 2rem;">Ready for a spotless space?</h2>
-              <p style="margin:0; color: rgba(255,255,255,0.85);">
-                Contact A-Kwart Cleaning Expert today for a free quote and a cleaning plan that fits your needs.
-              </p>
-            </div>
-            <a class="btn" href="mailto:info@akwartcleaningexpert.com">Request a Quote</a>
-          </div>
-        </div>
-      </section>
-    </main>
+  display: flex;
 
-    <footer>
-      <div class="container footer-row">
-        <div>© 2026 A-Kwart Cleaning Expert</div>
-        <div>Professional cleaning services for homes and businesses</div>
-      </div>
-    </footer>
-  </body>
+  gap: 22px;
+
+  align-items: center;
+
+}
+
+nav a {
+
+  color: var(--dark);
+
+  font-weight: 600;
+
+  font-size: 14px;
+
+}
+
+.btn {
+
+  display: inline-block;
+
+  background: var(--gold);
+
+  color: #17243a;
+
+  padding: 13px 24px;
+
+  border-radius: 7px;
+
+  font-weight: bold;
+
+  transition: .2s;
+
+}
+
+.btn:hover {
+
+  background: #e5a526;
+
+  transform: translateY(-2px);
+
+}
+
+.hero {
+
+  background: linear-gradient(120deg, #102e5c, #2165b7);
+
+  color: white;
+
+  padding: 105px 7%;
+
+  text-align: center;
+
+}
+
+.hero h1 {
+
+  font-size: clamp(34px, 6vw, 58px);
+
+  line-height: 1.15;
+
+  max-width: 900px;
+
+  margin: 0 auto 22px;
+
+}
+
+.hero p {
+
+  font-size: 18px;
+
+  max-width: 700px;
+
+  margin: 0 auto 30px;
+
+  color: #e1edff;
+
+}
+
+.hero .btn {
+
+  margin: 6px;
+
+}
+
+.btn-outline {
+
+  background: transparent;
+
+  border: 2px solid white;
+
+  color: white;
+
+}
+
+section {
+
+  padding: 75px 7%;
+
+}
+
+.section-heading {
+
+  text-align: center;
+
+  margin-bottom: 40px;
+
+}
+
+.section-heading h2 {
+
+  color: var(--blue);
+
+  font-size: 34px;
+
+  margin-bottom: 10px;
+
+}
+
+.section-heading p {
+
+  color: var(--muted);
+
+}
+
+.about {
+
+  background: white;
+
+  text-align: center;
+
+}
+
+.about-content {
+
+  max-width: 850px;
+
+  margin: auto;
+
+}
+
+.about-content p {
+
+  color: var(--muted);
+
+  margin-bottom: 15px;
+
+}
+
+.services-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+
+  gap: 22px;
+
+}
+
+.service-card {
+
+  background: white;
+
+  border-radius: 12px;
+
+  padding: 28px 22px;
+
+  box-shadow: 0 5px 20px #123b7810;
+
+  border-bottom: 4px solid var(--gold);
+
+  transition: .2s;
+
+}
+
+.service-card:hover {
+
+  transform: translateY(-5px);
+
+}
+
+.service-icon {
+
+  font-size: 38px;
+
+  margin-bottom: 12px;
+
+}
+
+.service-card h3 {
+
+  color: var(--blue);
+
+  margin-bottom: 10px;
+
+}
+
+.service-card p {
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+}
+
+.why {
+
+  background: var(--light-blue);
+
+}
+
+.why-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+
+  gap: 25px;
+
+  text-align: center;
+
+}
+
+.why-item {
+
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 10px;
+
+}
+
+.why-item h3 {
+
+  color: var(--blue);
+
+  margin-bottom: 8px;
+
+}
+
+.why-item p {
+
+  color: var(--muted);
+
+  font-size: 14px;
+
+}
+
+.cta {
+
+  background: var(--blue);
+
+  color: white;
+
+  text-align: center;
+
+}
+
+.cta h2 {
+
+  font-size: 34px;
+
+  margin-bottom: 15px;
+
+}
+
+.cta p {
+
+  margin-bottom: 25px;
+
+  color: #e1edff;
+
+}
+
+.contact {
+
+  background: white;
+
+}
+
+.contact-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  gap: 25px;
+
+  max-width: 900px;
+
+  margin: auto;
+
+}
+
+.contact-card {
+
+  background: #f3f7fc;
+
+  padding: 25px;
+
+  border-radius: 10px;
+
+}
+
+.contact-card h3 {
+
+  color: var(--blue);
+
+  margin-bottom: 10px;
+
+}
+
+.contact-card a {
+
+  color: var(--blue);
+
+  font-weight: bold;
+
+  overflow-wrap: anywhere;
+
+}
+
+footer {
+
+  background: #0b2041;
+
+  color: white;
+
+  padding: 30px 7%;
+
+  text-align: center;
+
+}
+
+footer p {
+
+  margin: 7px;
+
+  font-size: 14px;
+
+  color: #d3e1f4;
+
+}
+
+.whatsapp {
+
+  position: fixed;
+
+  bottom: 22px;
+
+  right: 20px;
+
+  background: #20c66b;
+
+  color: white;
+
+  padding: 14px 19px;
+
+  border-radius: 35px;
+
+  font-weight: bold;
+
+  z-index: 200;
+
+  box-shadow: 0 4px 15px #0003;
+
+}
+
+@media(max-width: 750px) {
+
+  header {
+
+    flex-direction: column;
+
+    gap: 13px;
+
+  }
+
+  nav {
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 12px;
+
+  }
+
+  nav a {
+
+    font-size: 12px;
+
+  }
+
+  .hero {
+
+    padding: 75px 6%;
+
+  }
+
+  section {
+
+    padding: 55px 6%;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <a class="logo" href="#home">A-KWART <span>CLEANING</span></a>
+
+  <nav>
+
+    <a href="#home">Home</a>
+
+    <a href="#about">About</a>
+
+    <a href="#services">Services</a>
+
+    <a href="#contact">Contact</a>
+
+  </nav>
+
+</header>
+
+<main>
+
+<section class="hero" id="home">
+
+  <h1>Professional Cleaning. Exceptional Results.</h1>
+
+  <p>
+
+    Welcome to A-Kwart Cleaning Expert Ltd.
+
+    Your trusted cleaning partner for homes, offices,
+
+    schools and commercial properties.
+
+  </p>
+
+  <a class="btn" href="#contact">GET A FREE QUOTE</a>
+
+  <a class="btn btn-outline"
+
+     href="https://wa.me/447858015558">
+
+     CONTACT US
+
+  </a>
+
+</section>
+
+<section class="about" id="about">
+
+  <div class="about-content">
+
+    <div class="section-heading">
+
+      <h2>About A-Kwart Cleaning Expert Ltd</h2>
+
+      <p>Professional service. Quality you can trust.</p>
+
+    </div>
+
+    <p>
+
+      A-Kwart Cleaning Expert Ltd is a professional cleaning
+
+      company based in Slough, providing reliable cleaning
+
+      solutions for residential and commercial customers.
+
+    </p>
+
+    <p>
+
+      We are committed to delivering high standards of
+
+      cleanliness, customer satisfaction and attention
+
+      to detail. We use eco-friendly cleaning options
+
+      where suitable.
+
+    </p>
+
+    <p>
+
+      Our team takes pride in creating clean, fresh and
+
+      welcoming environments for every customer.
+
+    </p>
+
+  </div>
+
+</section>
+
+<section id="services">
+
+  <div class="section-heading">
+
+    <h2>Our Cleaning Services</h2>
+
+    <p>Professional cleaning solutions to meet your needs.</p>
+
+  </div>
+
+  <div class="services-grid">
+
+    <div class="service-card">
+
+      <div class="service-icon">🏠</div>
+
+      <h3>Domestic Cleaning</h3>
+
+      <p>Reliable home cleaning to keep your living space fresh, tidy and hygienic.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🏢</div>
+
+      <h3>Commercial Cleaning</h3>
+
+      <p>Professional cleaning solutions for businesses and commercial premises.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🧹</div>
+
+      <h3>Office Cleaning</h3>
+
+      <p>Regular and scheduled office cleaning to maintain a professional working environment.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🔑</div>
+
+      <h3>End of Tenancy Cleaning</h3>
+
+      <p>Detailed property cleaning to prepare homes and flats for new tenants.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">✨</div>
+
+      <h3>Deep Cleaning</h3>
+
+      <p>Thorough cleaning of kitchens, bathrooms and hard-to-reach areas.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🪟</div>
+
+      <h3>Window Cleaning</h3>
+
+      <p>Professional internal and external window cleaning for homes and businesses.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🛋️</div>
+
+      <h3>Carpet Cleaning</h3>
+
+      <p>Cleaning solutions to refresh carpets and improve the appearance of your floors.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🏫</div>
+
+      <h3>School Cleaning</h3>
+
+      <p>Cleaning services for schools and educational environments.</p>
+
+    </div>
+
+    <div class="service-card">
+
+      <div class="service-icon">🛍️</div>
+
+      <h3>Retail Cleaning</h3>
+
+      <p>Helping shops and retail premises maintain a clean and welcoming environment.</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="why">
+
+  <div class="section-heading">
+
+    <h2>Why Choose A-Kwart?</h2>
+
+    <p>Your cleanliness and satisfaction are our priority.</p>
+
+  </div>
+
+  <div class="why-grid">
+
+    <div class="why-item">
+
+      <h3>Reliable Service</h3>
+
+      <p>We value your time and aim to deliver dependable cleaning services.</p>
+
+    </div>
+
+    <div class="why-item">
+
+      <h3>DBS Checked</h3>
+
+      <p>DBS checking information available for customer reassurance.</p>
+
+    </div>
+
+    <div class="why-item">
+
+      <h3>COSHH Awareness</h3>
+
+      <p>We take care with cleaning products and safe working practices.</p>
+
+    </div>
+
+    <div class="why-item">
+
+      <h3>Eco-Friendly Options</h3>
+
+      <p>Environmentally considerate cleaning options where suitable.</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <h2>Need a Professional Cleaner?</h2>
+
+  <p>
+
+    Let A-Kwart Cleaning Expert Ltd take care of your cleaning needs.
+
+    Contact us today for a free quotation.
+
+  </p>
+
+  <a class="btn"
+
+     href="https://wa.me/447858015558?text=Hello%20A-Kwart%20Cleaning%20Expert%20Ltd.%20I%20would%20like%20a%20free%20cleaning%20quotation.">
+
+     REQUEST A FREE QUOTE
+
+  </a>
+
+</section>
+
+<section class="contact" id="contact">
+
+  <div class="section-heading">
+
+    <h2>Contact Us</h2>
+
+    <p>We would love to hear from you.</p>
+
+  </div>
+
+  <div class="contact-grid">
+
+    <div class="contact-card">
+
+      <h3>📞 Phone</h3>
+
+      <a href="tel:+447858015558">07858 015558</a>
+
+    </div>
+
+    <div class="contact-card">
+
+      <h3>💬 WhatsApp</h3>
+
+      <a href="https://wa.me/447858015558">Message us on WhatsApp</a>
+
+    </div>
+
+    <div class="contact-card">
+
+      <h3>✉️ Email</h3>
+
+      <a href="mailto:2aa.kwart@gmail.com">2aa.kwart@gmail.com</a>
+
+    </div>
+
+    <div class="contact-card">
+
+      <h3>📍 Location</h3>
+
+      <p>Slough, Berkshire, United Kingdom</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+
+  <h3>A-KWART CLEANING EXPERT LTD</h3>
+
+  <p>Professional Cleaning Services You Can Trust.</p>
+
+  <p>Serving Slough and customers across England and Wales.</p>
+
+  <p>Phone: 07858 015558</p>
+
+  <p>© 2026 A-Kwart Cleaning Expert Ltd. All rights reserved.</p>
+
+</footer>
+
+<a class="whatsapp"
+
+   href="https://wa.me/447858015558"
+
+   target="_blank"
+
+   rel="noopener noreferrer">
+
+   WhatsApp Us
+
+</a>
+
+</body>
+
 </html>
