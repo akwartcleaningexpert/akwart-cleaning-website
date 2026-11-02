@@ -1,27 +1,673 @@
-# A-Kwart Cleaning Website + AI Chatbot
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A-Kwart Cleaning Expert Ltd | Slough Cleaning Services</title>
+    <meta
+      name="description"
+      content="A-Kwart Cleaning Expert Ltd provides reliable domestic, commercial, office, school, carpet, window and end-of-tenancy cleaning services in Slough and across England and Wales."
+    />
+    <meta name="theme-color" content="#123b78" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      :root {
+        --blue: #123b78;
+        --blue-2: #1d4f97;
+        --gold: #f4b942;
+        --gold-dark: #df9d20;
+        --dark: #17243a;
+        --muted: #64748b;
+        --ice: #edf5ff;
+        --white: #fff;
+        --card: #f8fbff;
+        --shadow: 0 18px 40px rgba(18,59,120,.10);
+      }
 
-This website includes a basic AI-powered chatbot for customer enquiries.
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--dark);
+        line-height: 1.6;
+        background: #f6f9ff;
+      }
+      a { text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
 
-## Quick start
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 2px 12px rgba(17,24,39,0.07);
+        backdrop-filter: blur(8px);
+      }
 
-1. Install dependencies:
-   npm install
-2. Create a local environment file:
-   cp .env.example .env
-3. Add your OpenAI API key in `.env`
-4. Start the server:
-   npm start
-5. Open http://localhost:3000
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 82px;
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 72px;
+      }
+      .logo img {
+        width: 230px;
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 8px 16px rgba(18,59,120,0.10));
+      }
+      nav {
+        display: flex;
+        gap: 26px;
+        align-items: center;
+      }
+      nav a {
+        color: var(--dark);
+        font-weight: 700;
+        font-size: 14px;
+      }
 
-## What the chatbot does
+      .btn {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        border-radius: 8px;
+        padding: 14px 22px;
+        transition: 0.2s ease;
+        border: 2px solid transparent;
+      }
+      .btn:hover { background: var(--gold-dark); transform: translateY(-2px); }
+      .btn.white { background: var(--white); color: var(--blue); }
+      .btn.outline { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.8); }
+      .btn.dark { background: var(--blue); color: var(--white); }
 
-- Answers questions about services
-- Explains availability and booking
-- Captures customer enquiries in chat
-- Uses OpenAI when `OPENAI_API_KEY` is present
-- Falls back to a local support script if no API key is configured
+      .hero {
+        background: linear-gradient(120deg, #103d7a, #1f5da9 48%, #2f79c5);
+        color: var(--white);
+        padding: 96px 0 78px;
+      }
+      .hero-wrap { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
+      .eyebrow {
+        display: inline-block;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: #eaf3ff;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 8px 14px;
+        margin-bottom: 18px;
+      }
+      .hero h1 { font-size: clamp(2.5rem, 6vw, 4.1rem); line-height: 1.1; margin-bottom: 18px; }
+      .hero p { font-size: 1.08rem; color: rgba(255,255,255,0.9); max-width: 650px; margin-bottom: 26px; }
+      .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 30px; }
+      .stats { display: flex; flex-wrap: wrap; gap: 26px; }
+      .stat { min-width: 120px; }
+      .stat strong { display: block; font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 2px; }
+      .stat span { color: rgba(255,255,255,0.8); }
 
-## Notes
+      .hero-panel {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 22px;
+        padding: 26px;
+        box-shadow: var(--shadow);
+      }
+      .hero-panel h3 { margin-bottom: 18px; font-size: 1.7rem; }
+      .check-list { list-style: none; display: grid; gap: 12px; }
+      .check-list li { position: relative; padding-left: 28px; color: rgba(255,255,255,0.95); }
+      .check-list li::before { content: "✓"; position: absolute; left: 0; top: 0; color: #7ef0b1; font-weight: 900; }
+      .mini-box { margin-top: 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 16px 18px; }
 
-- This setup is designed for a Node.js server, not GitHub Pages alone.
-- For a live production website, deploy the app to a host that supports Node.js (such as Render, Railway, Vercel serverless functions, or a VPS).
+      section { padding: 78px 0; }
+      .section-heading { text-align: center; max-width: 760px; margin: 0 auto 38px; }
+      .section-heading h2 { color: var(--blue); font-size: clamp(2rem, 4vw, 2.9rem); margin-bottom: 10px; }
+      .section-heading p { color: var(--muted); }
+
+      .about { background: var(--white); }
+      .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: center; }
+      .about-box { background: var(--card); border: 1px solid rgba(18,59,120,0.08); border-radius: 18px; padding: 32px; box-shadow: 0 8px 25px rgba(15,23,42,0.03); }
+      .about-box p { color: var(--muted); margin-bottom: 14px; }
+      .feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .feature-item { background: var(--white); border: 1px solid rgba(18,59,120,0.09); border-radius: 14px; padding: 22px; }
+      .feature-item h3 { color: var(--blue); margin-bottom: 8px; }
+      .feature-item p { color: var(--muted); font-size: 14px; }
+
+      .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+      .service-card { background: var(--white); border-radius: 16px; padding: 28px 22px; border: 1px solid rgba(18,59,120,0.07); box-shadow: 0 10px 24px rgba(18,59,120,0.04); border-bottom: 4px solid rgba(244,185,66,0.6); transition: 0.2s ease; }
+      .service-card:hover { transform: translateY(-5px); }
+      .service-icon { font-size: 2.2rem; margin-bottom: 10px; }
+      .service-card h3 { margin-bottom: 8px; color: var(--blue); }
+      .service-card p { color: var(--muted); font-size: 14px; }
+
+      .why { background: var(--ice); }
+      .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 22px; }
+      .why-item { background: var(--white); border: 1px solid rgba(18,59,120,0.08); border-radius: 14px; padding: 26px 20px; text-align: center; }
+      .why-item h3 { color: var(--blue); margin-bottom: 8px; }
+      .why-item p { color: var(--muted); font-size: 14px; }
+
+      .areas { background: var(--white); }
+      .areas-box { background: linear-gradient(135deg, #f7faff, #edf5ff); border: 1px solid rgba(18,59,120,0.08); border-radius: 18px; padding: 28px; }
+      .areas-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px 18px; margin-top: 20px; }
+      .areas-list li { color: var(--dark); font-weight: 700; padding: 10px 12px; background: rgba(255,255,255,0.7); border-radius: 10px; border: 1px solid rgba(18,59,120,0.05); }
+
+      .process { background: #f3f8ff; }
+      .process-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+      .step { background: var(--white); border: 1px solid rgba(18,59,120,0.08); border-radius: 16px; padding: 28px 22px; }
+      .step-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--gold); color: var(--dark); font-weight: 900; margin-bottom: 12px; }
+      .step h3 { color: var(--blue); margin-bottom: 8px; }
+      .step p { color: var(--muted); font-size: 14px; }
+
+      .testimonials { background: var(--white); }
+      .testimonial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+      .testimonial { background: var(--card); border: 1px solid rgba(18,59,120,0.08); border-radius: 18px; padding: 24px; }
+      .stars { color: #f9b934; letter-spacing: 0.12em; margin-bottom: 16px; }
+      .testimonial p { color: var(--muted); margin-bottom: 18px; }
+      .person { display: flex; align-items: center; gap: 12px; }
+      .avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--blue); color: var(--white); font-weight: 700; }
+      .person strong { display: block; color: var(--dark); }
+      .person span { color: var(--muted); font-size: 12px; }
+
+      .faq { background: #f9fbff; }
+      .faq-wrap { max-width: 900px; margin: 0 auto; }
+      details { background: var(--white); border: 1px solid rgba(18,59,120,0.08); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+      details summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+      details p { color: var(--muted); margin-top: 10px; }
+
+      .cta-panel { background: linear-gradient(135deg, var(--blue), var(--blue-2)); color: var(--white); border-radius: 20px; padding: 34px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+      .cta-panel h2 { font-size: clamp(2rem, 3vw, 2.6rem); margin-bottom: 8px; }
+      .cta-panel p { color: rgba(255,255,255,0.85); }
+
+      .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+      .contact-card { background: #f3f7fd; border: 1px solid rgba(18,59,120,0.06); border-radius: 14px; padding: 24px 20px; }
+      .contact-card h3 { color: var(--blue); margin-bottom: 8px; }
+      .contact-card a, .contact-card p { color: var(--dark); display: inline-block; font-weight: 700; }
+      .contact-card a { overflow-wrap: anywhere; }
+
+      .contact-form-wrap { background: var(--white); border: 1px solid rgba(18,59,120,0.08); border-radius: 18px; padding: 28px; box-shadow: 0 10px 20px rgba(15,23,42,0.04); }
+      form { display: grid; gap: 16px; }
+      .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      input, textarea { width: 100%; border: 1px solid rgba(18,59,120,0.14); background: #f9fbff; border-radius: 10px; padding: 14px 16px; font: inherit; color: var(--dark); }
+      textarea { min-height: 140px; resize: vertical; }
+
+      footer { background: #0b2041; color: rgba(255,255,255,0.9); padding: 26px 0 36px; }
+      .footer-box { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; text-align: center; }
+      footer h3 { font-size: 1.15rem; margin-bottom: 6px; }
+      footer p { font-size: 14px; }
+
+      .whatsapp-float {
+        position: fixed; right: 20px; bottom: 20px; z-index: 40; background:#20c66b; color: var(--white); border-radius: 999px; padding: 14px 18px; font-weight:800; box-shadow: 0 10px 30px rgba(1,185,129,0.35);
+      }
+
+      .chat-launcher {
+        position: fixed;
+        right: 20px;
+        bottom: 90px;
+        z-index: 42;
+        background: linear-gradient(135deg, var(--blue), #1d4f97);
+        color: var(--white);
+        border: none;
+        border-radius: 999px;
+        padding: 14px 18px;
+        font-weight: 800;
+        box-shadow: 0 14px 30px rgba(18,59,120,0.28);
+        cursor: pointer;
+      }
+
+      .chat-panel {
+        position: fixed;
+        right: 20px;
+        bottom: 150px;
+        width: min(360px, calc(100vw - 24px));
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        box-shadow: 0 22px 45px rgba(15,23,42,0.16);
+        overflow: hidden;
+        display: none;
+        z-index: 41;
+      }
+
+      .chat-panel.open {
+        display: block;
+      }
+
+      .chat-header {
+        background: linear-gradient(135deg, var(--blue), var(--blue-2));
+        color: var(--white);
+        padding: 14px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chat-header strong { display: block; font-size: 1rem; }
+      .chat-header small { opacity: 0.9; }
+      .chat-close {
+        border: none;
+        background: transparent;
+        color: var(--white);
+        font-size: 1.4rem;
+        cursor: pointer;
+      }
+
+      .chat-body {
+        max-height: 320px;
+        overflow-y: auto;
+        padding: 14px 14px 10px;
+        background: #f8fbff;
+      }
+
+      .message {
+        max-width: 88%;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .message.bot {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        color: var(--dark);
+        border-bottom-left-radius: 4px;
+      }
+
+      .message.user {
+        background: linear-gradient(135deg, #dbeafe, #eff6ff);
+        color: var(--dark);
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+      }
+
+      .quick-replies {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 14px 12px;
+        background: #f8fbff;
+      }
+
+      .quick-btn {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.1);
+        color: var(--blue);
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+
+      .chat-form {
+        display: flex;
+        gap: 8px;
+        padding: 12px 14px 14px;
+        background: var(--white);
+        border-top: 1px solid rgba(18,59,120,0.07);
+      }
+
+      .chat-form input {
+        flex: 1;
+        border: 1px solid rgba(18,59,120,0.12);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .chat-form button {
+        border: none;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 800;
+        border-radius: 10px;
+        padding: 10px 14px;
+        cursor: pointer;
+      }
+
+      .status {
+        margin-top: 12px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap, .about-grid, .process-grid, .testimonial-grid, .cta-panel { grid-template-columns: 1fr; display: grid; }
+        nav { display: none; }
+      }
+      @media (max-width: 700px) {
+        .hero { padding-top: 72px; }
+        section { padding: 62px 0; }
+        .field-row { grid-template-columns: 1fr; }
+        .cta-panel { display: block; }
+        .cta-panel .btn { margin-top: 18px; }
+        .logo img { width: 180px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="#home" class="logo" aria-label="A-Kwart Cleaning Expert Ltd home">
+          <img src="logo.svg" alt="A-Kwart Cleaning Expert Ltd Logo" />
+        </a>
+        <nav>
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#testimonials">Reviews</a>
+          <a href="#contact">Contact</a>
+          <a class="btn" href="#contact">Book Now</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-wrap">
+          <div>
+            <div class="eyebrow">Trusted local cleaning experts</div>
+            <h1>Professional Cleaning. Exceptional Results.</h1>
+            <p>
+              Welcome to A-Kwart Cleaning Expert Ltd. We provide dependable domestic,
+              commercial, office, end-of-tenancy, carpet, window and school cleaning services
+              for homes and businesses throughout Slough and across England and Wales.
+            </p>
+            <div class="cta-row">
+              <a class="btn white" href="#contact">Get a Free Quote</a>
+              <a class="btn outline" href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+            </div>
+            <div class="stats">
+              <div class="stat"><strong>500+</strong><span>Happy clients</span></div>
+              <div class="stat"><strong>8+ yrs</strong><span>Experience</span></div>
+              <div class="stat"><strong>24/7</strong><span>Support</span></div>
+            </div>
+          </div>
+
+          <div class="hero-panel">
+            <h3>Why choose A-Kwart?</h3>
+            <ul class="check-list">
+              <li>Residential and commercial cleaning</li>
+              <li>Reliable, punctual and detail-focused team</li>
+              <li>Eco-friendly products where suitable</li>
+              <li>Flexible scheduling to fit your routine</li>
+              <li>DBS-checked and safety-conscious service</li>
+            </ul>
+            <div class="mini-box"><strong>Special offer:</strong><br />Book a recurring cleaning plan and enjoy better value for regular care.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about" id="about">
+        <div class="container about-grid">
+          <div class="about-box">
+            <div class="section-heading" style="text-align:left; margin:0 0 22px; max-width:100%;">
+              <h2>About A-Kwart Cleaning Expert Ltd</h2>
+            </div>
+            <p>A-Kwart Cleaning Expert Ltd is a professional cleaning company based in Slough, proudly serving homes, offices, schools, shops and commercial premises with a dependable standard of service.</p>
+            <p>We are committed to delivering high standards of cleanliness, customer satisfaction and attention to detail. Our team works hard to create fresh, welcoming, comfortable spaces that are safe, tidy and professionally maintained.</p>
+            <p>Whether you need a regular routine clean, a one-off refresh or a specialised service, we tailor our approach to your needs, budget and schedule.</p>
+          </div>
+
+          <div class="about-box">
+            <div class="feature-list">
+              <div class="feature-item"><h3>Tailored Service</h3><p>We adapt our cleaning plan around your property, routine and preferences.</p></div>
+              <div class="feature-item"><h3>Quality Finish</h3><p>We focus on the details that make a visible difference to every room.</p></div>
+              <div class="feature-item"><h3>Reliable Team</h3><p>Professional service, punctual arrivals and respectful customer care.</p></div>
+              <div class="feature-item"><h3>Safe Products</h3><p>We use appropriate cleaning products and safe working practices.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Our Cleaning Services</h2>
+            <p>Professional cleaning solutions designed for homes, businesses and specialist properties.</p>
+          </div>
+          <div class="services-grid">
+            <div class="service-card"><div class="service-icon">🏠</div><h3>Domestic Cleaning</h3><p>Reliable home cleaning to keep kitchens, bathrooms, bedrooms and living spaces fresh, tidy and hygienic.</p></div>
+            <div class="service-card"><div class="service-icon">🏢</div><h3>Commercial Cleaning</h3><p>Support for businesses, offices and commercial premises with dependable, professional cleaning services.</p></div>
+            <div class="service-card"><div class="service-icon">🧹</div><h3>Office Cleaning</h3><p>Regular and scheduled office cleaning to maintain a neat, productive working environment.</p></div>
+            <div class="service-card"><div class="service-icon">🔑</div><h3>End of Tenancy</h3><p>Detailed cleaning to prepare properties for new renters, move-ins and inspections.</p></div>
+            <div class="service-card"><div class="service-icon">✨</div><h3>Deep Cleaning</h3><p>Thorough cleaning of hard-to-reach areas, surfaces and high-use spaces that need extra attention.</p></div>
+            <div class="service-card"><div class="service-icon">🪟</div><h3>Window Cleaning</h3><p>Interior and exterior window cleaning for a brighter, cleaner finish in homes and businesses.</p></div>
+            <div class="service-card"><div class="service-icon">🛋️</div><h3>Carpet Cleaning</h3><p>Refresh and revive carpets to improve appearance, comfort and overall cleanliness.</p></div>
+            <div class="service-card"><div class="service-icon">🏫</div><h3>School Cleaning</h3><p>Cleaning services for schools and educational spaces to maintain a safe, welcoming environment.</p></div>
+            <div class="service-card"><div class="service-icon">🛍️</div><h3>Retail Cleaning</h3><p>Helping shops and retail spaces maintain a polished, customer-friendly appearance.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="why">
+        <div class="container">
+          <div class="section-heading"><h2>Why Choose A-Kwart?</h2><p>Your cleanliness and satisfaction are our priority.</p></div>
+          <div class="why-grid">
+            <div class="why-item"><h3>Reliable Service</h3><p>We value your time and aim to deliver dependable, professional cleaning every visit.</p></div>
+            <div class="why-item"><h3>DBS Checked</h3><p>DBS checking information available for customer reassurance and peace of mind.</p></div>
+            <div class="why-item"><h3>COSHH Awareness</h3><p>We take care with cleaning products and safe working practices.</p></div>
+            <div class="why-item"><h3>Eco-Friendly Options</h3><p>Environmentally considerate cleaning choices are available where suitable.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="areas">
+        <div class="container">
+          <div class="section-heading"><h2>Areas We Cover</h2><p>Serving Slough and surrounding communities across England and Wales.</p></div>
+          <div class="areas-box">
+            <ul class="areas-list">
+              <li>Slough</li><li>Maidenhead</li><li>Windsor</li><li>Reading</li><li>Guildford</li><li>Oxford</li><li>Bristol</li><li>Cardiff</li><li>London</li><li>Across England & Wales</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="process">
+        <div class="container">
+          <div class="section-heading"><h2>How It Works</h2><p>Simple, straightforward service from first call to final sparkle.</p></div>
+          <div class="process-grid">
+            <div class="step"><div class="step-number">1</div><h3>Request a Quote</h3><p>Tell us about your property and the cleaning you need, and we’ll share a suitable plan.</p></div>
+            <div class="step"><div class="step-number">2</div><h3>Choose Your Schedule</h3><p>Select a date and time that works for you, including one-off or recurring cleans.</p></div>
+            <div class="step"><div class="step-number">3</div><h3>Enjoy a Fresh Space</h3><p>Our team handles the work with care, attention to detail and reliable service.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials" id="testimonials">
+        <div class="container">
+          <div class="section-heading"><h2>What Our Clients Say</h2><p>Real feedback from customers who trust A-Kwart with their homes and workplaces.</p></div>
+          <div class="testimonial-grid">
+            <div class="testimonial"><div class="stars">★★★★★</div><p>“Absolutely brilliant service. The team was punctual, professional and my kitchen looked spotless afterwards.”</p><div class="person"><div class="avatar">S</div><div><strong>Sarah M.</strong><span>Homeowner</span></div></div></div>
+            <div class="testimonial"><div class="stars">★★★★★</div><p>“We use A-Kwart for regular office cleaning and they’re always reliable, courteous and thorough.”</p><div class="person"><div class="avatar">J</div><div><strong>James T.</strong><span>Business Owner</span></div></div></div>
+            <div class="testimonial"><div class="stars">★★★★★</div><p>“Our end-of-tenancy clean was fantastic. It made the property ready for handover and exceeded expectations.”</p><div class="person"><div class="avatar">L</div><div><strong>Laura P.</strong><span>Landlord</span></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq">
+        <div class="container faq-wrap">
+          <div class="section-heading"><h2>Frequently Asked Questions</h2><p>Helpful answers to common questions about our cleaning services.</p></div>
+          <details open><summary>Do you offer regular cleaning schedules?</summary><p>Yes. We provide recurring cleaning plans for homes and businesses, with flexible weekly or fortnightly options to suit your routine.</p></details>
+          <details><summary>Are your cleaners insured and trustworthy?</summary><p>We take customer trust seriously and provide a professional, safety-conscious service with checks in place for reassurance.</p></details>
+          <details><summary>Do you clean offices and commercial spaces?</summary><p>Absolutely. We offer commercial and office cleaning services tailored to your working hours and business requirements.</p></details>
+          <details><summary>Can I request a quote quickly?</summary><p>Yes. Contact us by phone or WhatsApp and we’ll be happy to provide a free quotation based on your needs.</p></details>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="container">
+          <div class="cta-panel">
+            <div><h2>Need a professional cleaner?</h2><p>Let A-Kwart Cleaning Expert Ltd take care of your home or business cleaning needs.</p></div>
+            <a class="btn white" href="https://wa.me/447858015558?text=Hello%20A-Kwart%20Cleaning%20Expert%20Ltd.%20I%20would%20like%20a%20free%20cleaning%20quotation." target="_blank" rel="noopener noreferrer">Book a Quote</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contact">
+        <div class="container">
+          <div class="section-heading"><h2>Contact Us</h2><p>We’d love to hear about your cleaning requirements.</p></div>
+
+          <div class="contact-grid" style="margin-bottom:26px;">
+            <div class="contact-card"><h3>📞 Phone</h3><a href="tel:+447858015558">07858 015558</a></div>
+            <div class="contact-card"><h3>💬 WhatsApp</h3><a href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">Message us directly</a></div>
+            <div class="contact-card"><h3>✉️ Email</h3><a href="mailto:2aa.kwart@gmail.com">2aa.kwart@gmail.com</a></div>
+            <div class="contact-card"><h3>📍 Location</h3><p>Slough, Berkshire, United Kingdom</p></div>
+          </div>
+
+          <div class="contact-form-wrap">
+            <form id="enquiryForm">
+              <div class="field-row">
+                <input type="text" name="name" placeholder="Your name" aria-label="Your name" required />
+                <input type="email" name="email" placeholder="Your email" aria-label="Your email" required />
+              </div>
+              <div class="field-row">
+                <input type="tel" name="phone" placeholder="Your phone number" aria-label="Your phone number" />
+                <input type="text" name="service" placeholder="Service required" aria-label="Service required" />
+              </div>
+              <textarea name="message" placeholder="Tell us about your cleaning requirements..." aria-label="Tell us about your cleaning requirements" required></textarea>
+              <button class="btn dark" type="submit">Send Enquiry</button>
+              <div class="status" id="leadStatus"></div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-box">
+        <div><h3>A-KWART CLEANING EXPERT LTD</h3><p>Professional Cleaning Services You Can Trust.</p></div>
+        <div><p>Serving Slough and customers across England and Wales.</p><p>Phone: 07858 015558</p><p>© 2026 A-Kwart Cleaning Expert Ltd. All rights reserved.</p></div>
+      </div>
+    </footer>
+
+    <button class="chat-launcher" id="chatLauncher" aria-label="Open A-Kwart AI assistant">💬 Chat</button>
+    <div class="chat-panel" id="chatPanel" aria-live="polite">
+      <div class="chat-header">
+        <div>
+          <strong>A-Kwart AI</strong>
+          <small>Helping customers</small>
+        </div>
+        <button type="button" class="chat-close" id="chatClose" aria-label="Close chat">×</button>
+      </div>
+
+      <div class="chat-body" id="chatMessages">
+        <div class="message bot">Hi! I’m A-Kwart AI. Ask me about our cleaning services, prices, availability, or how to book.</div>
+      </div>
+
+      <div class="quick-replies">
+        <button class="quick-btn" type="button" data-message="What cleaning services do you offer?">Services</button>
+        <button class="quick-btn" type="button" data-message="How do I get a free quote?">Free quote</button>
+        <button class="quick-btn" type="button" data-message="Do you clean offices?">Office cleaning</button>
+        <button class="quick-btn" type="button" data-message="How can I book?">Book now</button>
+      </div>
+
+      <form class="chat-form" id="chatForm">
+        <input id="chatInput" type="text" placeholder="Type your question..." aria-label="Type your question" autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <a class="whatsapp-float" href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+
+    <script>
+      const chatLauncher = document.getElementById('chatLauncher');
+      const chatPanel = document.getElementById('chatPanel');
+      const chatClose = document.getElementById('chatClose');
+      const chatForm = document.getElementById('chatForm');
+      const chatInput = document.getElementById('chatInput');
+      const chatMessages = document.getElementById('chatMessages');
+      const enquiryForm = document.getElementById('enquiryForm');
+      const leadStatus = document.getElementById('leadStatus');
+
+      function addMessage(text, type) {
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      async function sendChatMessage(message) {
+        addMessage(message, 'user');
+
+        try {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+          });
+
+          const data = await response.json();
+          addMessage(data.reply || 'I’m sorry, I could not answer that right now. Please call 07858 015558 for support.', 'bot');
+        } catch (error) {
+          addMessage('I’m sorry, the chat is temporarily unavailable. Please contact us on 07858 015558 or WhatsApp us directly.', 'bot');
+        }
+      }
+
+      chatLauncher.addEventListener('click', () => {
+        chatPanel.classList.toggle('open');
+      });
+
+      chatClose.addEventListener('click', () => {
+        chatPanel.classList.remove('open');
+      });
+
+      document.querySelectorAll('.quick-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const message = button.getAttribute('data-message');
+          sendChatMessage(message);
+        });
+      });
+
+      chatForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = chatInput.value.trim();
+
+        if (!value) {
+          return;
+        }
+
+        chatInput.value = '';
+        sendChatMessage(value);
+      });
+
+      enquiryForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(enquiryForm);
+        const payload = Object.fromEntries(formData.entries());
+
+        leadStatus.textContent = 'Sending your enquiry...';
+
+        try {
+          const response = await fetch('/api/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Unable to send enquiry.');
+          }
+
+          leadStatus.textContent = data.message || 'Your enquiry has been sent successfully.';
+          enquiryForm.reset();
+        } catch (error) {
+          leadStatus.textContent = error.message || 'There was a problem sending your enquiry.';
+        }
+      });
+    </script>
+  </body>
+</html>

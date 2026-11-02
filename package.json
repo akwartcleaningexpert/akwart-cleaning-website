@@ -1,9 +1,8 @@
 {
   "name": "akwart-cleaning-ai-chatbot",
   "version": "1.0.0",
-  "description": "AI-powered chatbot backend for A-Kwart Cleaning Expert Ltd website",
+  "description": "AI-powered chatbot and enquiry system for A-Kwart Cleaning Expert Ltd",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
@@ -11,6 +10,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
+    "nodemailer": "^6.9.14",
     "openai": "^4.57.0"
   }
 }
