@@ -1,4 +1,1484 @@
-{
+const express = require('express');
+const path = require('path');
+const OpenAI = require('openai');
+const dotenv = require('dotenv');
+const nodemailer = require('nodemailer');
+const multer = require('multer');
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '.')));
+
+const fallbackReply = (message) => {
+  const question = message.toLowerCase();
+
+  if (question.includes('hello') || question.includes('hi')) {
+    return 'Hello! I can help with our cleaning services, quoting, availability and booking. Ask me anything about A-Kwart Cleaning Expert Ltd.';
+  }
+
+  if (question.includes('service') || question.includes('offer') || question.includes('clean')) {
+    return 'We offer domestic cleaning, office cleaning, commercial cleaning, end of tenancy cleaning, deep cleaning, window cleaning, school cleaning, carpet cleaning and retail cleaning.';
+  }
+
+  if (question.includes('quote') || question.includes('price') || question.includes('cost') || question.includes('estimate')) {
+    return 'You can get a free quote by phone, WhatsApp, or by sending us your requirements via the contact form on the website. We will advise on the best service for your needs.';
+  }
+
+  if (question.includes('office') || question.includes('commercial') || question.includes('business')) {
+    return 'Yes, we provide office and commercial cleaning services for businesses throughout Slough and surrounding areas. We can work around your schedule and business hours.';
+  }
+
+  if (question.includes('book') || question.includes('appointment') || question.includes('schedule')) {
+    return 'You can book by calling 07858 015558, WhatsApp us, or sending an enquiry through the contact form on this website.';
+  }
+
+  if (question.includes('area') || question.includes('cover') || question.includes('location')) {
+    return 'We serve Slough and surrounding areas across England and Wales, including Maidenhead, Windsor, Reading, Guildford, Oxford, Bristol, Cardiff, and London.';
+  }
+
+  if (question.includes('domestic') || question.includes('home')) {
+    return 'Yes, we provide reliable domestic cleaning for kitchens, bathrooms, bedrooms, living spaces and regular home maintenance cleaning.';
+  }
+
+  if (question.includes('tenancy') || question.includes('move')) {
+    return 'Yes, we offer end-of-tenancy cleaning to help prepare a property for handover, inspection or new tenants.';
+  }
+
+  if (question.includes('window') || question.includes('carpet') || question.includes('deep')) {
+    return 'Yes, we also provide window cleaning, carpet cleaning and deep cleaning services tailored to the condition and needs of your property.';
+  }
+
+  if (question.includes('contact') || question.includes('email') || question.includes('phone') || question.includes('whatsapp')) {
+    return 'Contact us on 07858 015558, email 2aa.kwart@gmail.com, or WhatsApp us directly for a fast response.';
+  }
+
+  if (question.includes('thank')) {
+    return 'You’re welcome! We’re happy to help. Contact us for a free quote or to book your cleaning service.';
+  }
+
+  return 'Thanks for your message. For the quickest response, please call 07858 015558 or send a WhatsApp message. We can help with pricing, scheduling and the right cleaning service for your property.';
+};
+
+const sendEnquiryEmail = async ({ name, email, phone, service, message }) => {
+  const host = process.env.EMAIL_HOST;
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  const to = process.env.EMAIL_TO || '2aa.kwart@gmail.com';
+
+  if (!host || !user || !pass) {
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.EMAIL_PORT || 587),
+    secure: Number(process.env.EMAIL_PORT || 587) === 465,
+    auth: { user, pass }
+  });
+
+  await transporter.sendMail({
+    from: user,
+    to,
+    replyTo: email || user,
+    subject: `New enquiry from ${name || 'Website Visitor'}`,
+    text: `Name: ${name || 'N/A'}\nEmail: ${email || 'N/A'}\nPhone: ${phone || 'N/A'}\nService: ${service || 'N/A'}\n\nMessage:\n${message || 'No message provided.'}`
+  });
+
+  return true;
+};
+
+const sendCareerApplicationEmail = async ({ fullName, email, phone, position, message, resumeBuffer, resumeName }) => {
+  const host = process.env.EMAIL_HOST;
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  const to = process.env.EMAIL_TO || '2aa.kwart@gmail.com';
+
+  if (!host || !user || !pass) {
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.EMAIL_PORT || 587),
+    secure: Number(process.env.EMAIL_PORT || 587) === 465,
+    auth: { user, pass }
+  });
+
+  const attachments = resumeBuffer && resumeName
+    ? [{ filename: resumeName, content: resumeBuffer }]
+    : [];
+
+  await transporter.sendMail({
+    from: user,
+    to,
+    replyTo: email || user,
+    subject: `New job application: ${position || 'General enquiry'}`,
+    text: `Full name: ${fullName || 'N/A'}\nEmail: ${email || 'N/A'}\nPhone: ${phone || 'N/A'}\nPosition: ${position || 'N/A'}\n\nMessage:\n${message || 'No message provided.'}`,
+    attachments
+  });
+
+  return true;
+};
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/careers', (req, res) => {
+  res.sendFile(path.join(__dirname, 'careers.html'));
+});
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message } = req.body || {};
+
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ error: 'A message is required.' });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return res.json({ reply: fallbackReply(message) });
+    }
+
+    const openai = new OpenAI({ apiKey });
+
+    const response = await openai.responses.create({
+      model: 'gpt-4o-mini',
+      input: [
+        {
+          role: 'system',
+          content: 'You are A-Kwart AI, a friendly assistant for A-Kwart Cleaning Expert Ltd. Your job is to answer questions about cleaning services, pricing, availability, bookings, and customer enquiries. Keep responses warm, concise, and professional.'
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      temperature: 0.7,
+      max_output_tokens: 300
+    });
+
+    const reply = response.output_text || fallbackReply(message);
+
+    return res.json({ reply });
+  } catch (error) {
+    console.error('Chatbot error:', error);
+    return res.json({ reply: fallbackReply(req.body?.message || '') });
+  }
+});
+
+app.post('/api/lead', async (req, res) => {
+  try {
+    const { name, email, phone, service, message } = req.body || {};
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'Name, email and message are required.' });
+    }
+
+    await sendEnquiryEmail({ name, email, phone, service, message });
+
+    return res.json({
+      success: true,
+      message: 'Thanks! Your enquiry has been sent successfully.'
+    });
+  } catch (error) {
+    console.error('Lead submission error:', error);
+    return res.status(500).json({ error: 'There was a problem sending your enquiry.' });
+  }
+});
+
+app.post('/api/careers', upload.single('resume'), async (req, res) => {
+  try {
+    const { fullName, email, phone, position, message } = req.body || {};
+
+    if (!fullName || !email || !phone || !position || !message) {
+      return res.status(400).json({
+        error: 'Full name, email, phone, position, and message are required.'
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: 'Please upload your CV or resume.'
+      });
+    }
+
+    const emailSent = await sendCareerApplicationEmail({
+      fullName,
+      email,
+      phone,
+      position,
+      message,
+      resumeBuffer: req.file.buffer,
+      resumeName: req.file.originalname
+    });
+
+    if (!emailSent) {
+      return res.status(500).json({
+        error: 'Email delivery is not configured yet. Please contact the hiring team directly.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Thank you for your application. We have received your details and CV.'
+    });
+  } catch (error) {
+    console.error('Career application error:', error);
+    return res.status(500).json({
+      error: 'There was a problem submitting your application. Please try again later.'
+    });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`A-Kwart AI chatbot running on http://localhost:${port}`);
+});
+"path":"server.js","content":"const express = require('express');
+const path = require('path');
+const OpenAI = require('openai');
+const dotenv = require('dotenv');
+const nodemailer = require('nodemailer');
+const multer = require('multer');
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '.')));
+
+const fallbackReply = (message) => {
+  const question = message.toLowerCase();
+
+  if (question.includes('hello') || question.includes('hi')) {
+    return 'Hello! I can help with our cleaning services, quoting, availability and booking. Ask me anything about A-Kwart Cleaning Expert Ltd.';
+  }
+
+  if (question.includes('service') || question.includes('offer') || question.includes('clean')) {
+    return 'We offer domestic cleaning, office cleaning, commercial cleaning, end of tenancy cleaning, deep cleaning, window cleaning, school cleaning, carpet cleaning and retail cleaning.';
+  }
+
+  if (question.includes('quote') || question.includes('price') || question.includes('cost') || question.includes('estimate')) {
+    return 'You can get a free quote by phone, WhatsApp, or by sending us your requirements via the contact form on the website. We will advise on the best service for your needs.';
+  }
+
+  if (question.includes('office') || question.includes('commercial') || question.includes('business')) {
+    return 'Yes, we provide office and commercial cleaning services for businesses throughout Slough and surrounding areas. We can work around your schedule and business hours.';
+  }
+
+  if (question.includes('book') || question.includes('appointment') || question.includes('schedule')) {
+    return 'You can book by calling 07858 015558, WhatsApp us, or sending an enquiry through the contact form on this website.';
+  }
+
+  if (question.includes('area') || question.includes('cover') || question.includes('location')) {
+    return 'We serve Slough and surrounding areas across England and Wales, including Maidenhead, Windsor, Reading, Guildford, Oxford, Bristol, Cardiff, and London.';
+  }
+
+  if (question.includes('domestic') || question.includes('home')) {
+    return 'Yes, we provide reliable domestic cleaning for kitchens, bathrooms, bedrooms, living spaces and regular home maintenance cleaning.';
+  }
+
+  if (question.includes('tenancy') || question.includes('move')) {
+    return 'Yes, we offer end-of-tenancy cleaning to help prepare a property for handover, inspection or new tenants.';
+  }
+
+  if (question.includes('window') || question.includes('carpet') || question.includes('deep')) {
+    return 'Yes, we also provide window cleaning, carpet cleaning and deep cleaning services tailored to the condition and needs of your property.';
+  }
+
+  if (question.includes('contact') || question.includes('email') || question.includes('phone') || question.includes('whatsapp')) {
+    return 'Contact us on 07858 015558, email 2aa.kwart@gmail.com, or WhatsApp us directly for a fast response.';
+  }
+
+  if (question.includes('thank')) {
+    return 'You’re welcome! We’re happy to help. Contact us for a free quote or to book your cleaning service.';
+  }
+
+  return 'Thanks for your message. For the quickest response, please call 07858 015558 or send a WhatsApp message. We can help with pricing, scheduling and the right cleaning service for your property.';
+};
+
+const sendEnquiryEmail = async ({ name, email, phone, service, message }) => {
+  const host = process.env.EMAIL_HOST;
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  const to = process.env.EMAIL_TO || '2aa.kwart@gmail.com';
+
+  if (!host || !user || !pass) {
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.EMAIL_PORT || 587),
+    secure: Number(process.env.EMAIL_PORT || 587) === 465,
+    auth: { user, pass }
+  });
+
+  await transporter.sendMail({
+    from: user,
+    to,
+    replyTo: email || user,
+    subject: `New enquiry from ${name || 'Website Visitor'}`,
+    text: `Name: ${name || 'N/A'}\nEmail: ${email || 'N/A'}\nPhone: ${phone || 'N/A'}\nService: ${service || 'N/A'}\n\nMessage:\n${message || 'No message provided.'}`
+  });
+
+  return true;
+};
+
+const sendCareerApplicationEmail = async ({ fullName, email, phone, position, message, resumeBuffer, resumeName }) => {
+  const host = process.env.EMAIL_HOST;
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  const to = process.env.EMAIL_TO || '2aa.kwart@gmail.com';
+
+  if (!host || !user || !pass) {
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.EMAIL_PORT || 587),
+    secure: Number(process.env.EMAIL_PORT || 587) === 465,
+    auth: { user, pass }
+  });
+
+  const attachments = resumeBuffer && resumeName
+    ? [{ filename: resumeName, content: resumeBuffer }]
+    : [];
+
+  await transporter.sendMail({
+    from: user,
+    to,
+    replyTo: email || user,
+    subject: `New job application: ${position || 'General enquiry'}`,
+    text: `Full name: ${fullName || 'N/A'}\nEmail: ${email || 'N/A'}\nPhone: ${phone || 'N/A'}\nPosition: ${position || 'N/A'}\n\nMessage:\n${message || 'No message provided.'}`,
+    attachments
+  });
+
+  return true;
+};
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/careers', (req, res) => {
+  res.sendFile(path.join(__dirname, 'careers.html'));
+});
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message } = req.body || {};
+
+    if (!message || typeof message !== 'string' || !message.trim()) {
+      return res.status(400).json({ error: 'A message is required.' });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return res.json({ reply: fallbackReply(message) });
+    }
+
+    const openai = new OpenAI({ apiKey });
+
+    const response = await openai.responses.create({
+      model: 'gpt-4o-mini',
+      input: [
+        {
+          role: 'system',
+          content: 'You are A-Kwart AI, a friendly assistant for A-Kwart Cleaning Expert Ltd. Your job is to answer questions about cleaning services, pricing, availability, bookings, and customer enquiries. Keep responses warm, concise, and professional.'
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      temperature: 0.7,
+      max_output_tokens: 300
+    });
+
+    const reply = response.output_text || fallbackReply(message);
+
+    return res.json({ reply });
+  } catch (error) {
+    console.error('Chatbot error:', error);
+    return res.json({ reply: fallbackReply(req.body?.message || '') });
+  }
+});
+
+app.post('/api/lead', async (req, res) => {
+  try {
+    const { name, email, phone, service, message } = req.body || {};
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'Name, email and message are required.' });
+    }
+
+    await sendEnquiryEmail({ name, email, phone, service, message });
+
+    return res.json({
+      success: true,
+      message: 'Thanks! Your enquiry has been sent successfully.'
+    });
+  } catch (error) {
+    console.error('Lead submission error:', error);
+    return res.status(500).json({ error: 'There was a problem sending your enquiry.' });
+  }
+});
+
+app.post('/api/careers', upload.single('resume'), async (req, res) => {
+  try {
+    const { fullName, email, phone, position, message } = req.body || {};
+
+    if (!fullName || !email || !phone || !position || !message) {
+      return res.status(400).json({
+        error: 'Full name, email, phone, position, and message are required.'
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: 'Please upload your CV or resume.'
+      });
+    }
+
+    const emailSent = await sendCareerApplicationEmail({
+      fullName,
+      email,
+      phone,
+      position,
+      message,
+      resumeBuffer: req.file.buffer,
+      resumeName: req.file.originalname
+    });
+
+    if (!emailSent) {
+      return res.status(500).json({
+        error: 'Email delivery is not configured yet. Please contact the hiring team directly.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Thank you for your application. We have received your details and CV.'
+    });
+  } catch (error) {
+    console.error('Career application error:', error);
+    return res.status(500).json({
+      error: 'There was a problem submitting your application. Please try again later.'
+    });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`A-Kwart AI chatbot running on http://localhost:${port}`);
+});
+"},
+{"content":"<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Careers | A-Kwart Cleaning Expert Ltd</title>
+    <meta
+      name="description"
+      content="Join the A-Kwart Cleaning Expert Ltd team. Apply for cleaning jobs and opportunities with our professional team."
+    />
+    <style>
+      :root {
+        --blue: #123b78;
+        --blue-2: #1d4f97;
+        --gold: #f4b942;
+        --gold-dark: #df9d20;
+        --dark: #17243a;
+        --muted: #64748b;
+        --ice: #edf5ff;
+        --white: #fff;
+        --card: #f8fbff;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f6f9ff;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+      a { text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 2px 12px rgba(17,24,39,0.07);
+        backdrop-filter: blur(8px);
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 82px;
+      }
+
+      .logo img {
+        width: 210px;
+        height: auto;
+      }
+
+      nav {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      nav a {
+        color: var(--dark);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 800;
+        padding: 14px 22px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+
+      .btn.white {
+        background: var(--white);
+        color: var(--blue);
+      }
+
+      .btn.outline {
+        background: transparent;
+        color: var(--white);
+        border-color: rgba(255,255,255,0.8);
+      }
+
+      .hero {
+        background: linear-gradient(120deg, #103d7a, #1f5da9 48%, #2f79c5);
+        color: var(--white);
+        padding: 72px 0;
+      }
+
+      .hero-wrap {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: #eaf3ff;
+        border-radius: 999px;
+        padding: 8px 14px;
+        margin-bottom: 18px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1.1;
+        margin-bottom: 18px;
+      }
+
+      .hero p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.04rem;
+        margin-bottom: 26px;
+        max-width: 640px;
+      }
+
+      .feature-box {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .feature-box h3 {
+        font-size: 1.1rem;
+      }
+
+      .feature-box ul {
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .feature-box li {
+        color: rgba(255,255,255,0.9);
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .section-heading {
+        text-align: center;
+        max-width: 760px;
+        margin: 0 auto 38px;
+      }
+
+      .section-heading h2 {
+        font-size: clamp(2rem, 4vw, 2.7rem);
+        color: var(--blue);
+        margin-bottom: 10px;
+      }
+
+      .section-heading p {
+        color: var(--muted);
+      }
+
+      .roles-grid, .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+
+      .role-card, .info-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 24px 22px;
+        border: 1px solid rgba(18,59,120,0.08);
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .role-card h3, .info-card h3 {
+        color: var(--blue);
+        margin-bottom: 8px;
+      }
+
+      .role-card p, .info-card p {
+        color: var(--muted);
+      }
+
+      .application-wrap {
+        display: grid;
+        grid-template-columns: 0.86fr 1.14fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      .apply-panel {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .apply-panel h3 {
+        color: var(--blue);
+        margin-bottom: 14px;
+      }
+
+      .apply-panel ul {
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+
+      .apply-panel li {
+        color: var(--dark);
+        font-weight: 700;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      input, textarea, select {
+        width: 100%;
+        border: 1px solid rgba(18,59,120,0.14);
+        background: #f9fbff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font: inherit;
+        color: var(--dark);
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      .alert {
+        display: none;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+
+      .alert.success {
+        display: block;
+        background: #eafaf0;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+      }
+
+      .alert.error {
+        display: block;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+
+      footer {
+        background: #0b2041;
+        color: rgba(255,255,255,0.9);
+        padding: 28px 0 36px;
+      }
+
+      .footer-box {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap, .application-wrap { grid-template-columns: 1fr; }
+        nav { display: none; }
+      }
+
+      @media (max-width: 700px) {
+        .field-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="/" class="logo" aria-label="A-Kwart Cleaning Expert Ltd home">
+          <img src="logo.svg" alt="A-Kwart Cleaning Expert Ltd Logo" />
+        </a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#services">Services</a>
+          <a href="/#contact">Contact</a>
+          <a href="/careers">Careers</a>
+          <a class="btn" href="/#contact">Book Now</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-wrap">
+          <div>
+            <div class="eyebrow">Join our team</div>
+            <h1>Work with a team that values reliability and excellence.</h1>
+            <p>
+              We’re looking for dedicated people who take pride in their work, care about detail,
+              and want to help create spotless, welcoming spaces for homes and businesses across
+              Slough and beyond.
+            </p>
+            <div class="cta-row">
+              <a class="btn white" href="#apply">Apply Now</a>
+              <a class="btn outline" href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">WhatsApp Hiring Team</a>
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <h3>Why join A-Kwart?</h3>
+            <ul>
+              <li>• Flexible working opportunities</li>
+              <li>• Supportive and professional team environment</li>
+              <li>• Clear standards and training for quality service</li>
+              <li>• Opportunities across domestic and commercial cleaning roles</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Available Opportunities</h2>
+            <p>We welcome applicants for both customer-facing and hands-on cleaning roles.</p>
+          </div>
+
+          <div class="roles-grid">
+            <div class="role-card">
+              <h3>Cleaner</h3>
+              <p>Domestic and commercial cleaning work with attention to detail and a strong work ethic.</p>
+            </div>
+            <div class="role-card">
+              <h3>Team Supervisor</h3>
+              <p>Lead staff, manage quality checks, and maintain professional service standards.</p>
+            </div>
+            <div class="role-card">
+              <h3>Office Support</h3>
+              <p>Support scheduling, client communication, and operational coordination.</p>
+            </div>
+            <div class="role-card">
+              <h3>Contract Roles</h3>
+              <p>Flexible daily, weekly, or project-based opportunities for skilled cleaners.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="apply">
+        <div class="container application-wrap">
+          <aside class="apply-panel">
+            <h3>What we look for</h3>
+            <ul>
+              <li>• Reliable and punctual team members</li>
+              <li>• Strong attention to detail</li>
+              <li>• Good communication and professionalism</li>
+              <li>• Willingness to work to a high standard</li>
+              <li>• Flexibility to meet client needs</li>
+            </ul>
+          </aside>
+
+          <div class="apply-panel">
+            <div class="section-heading" style="text-align:left; margin:0 0 22px; max-width:100%;">
+              <h2>Apply for a job</h2>
+              <p>Tell us about yourself and upload your CV. We’ll review your application and get back to you.</p>
+            </div>
+
+            <form id="career-form" enctype="multipart/form-data">
+              <div class="field-row">
+                <input type="text" id="fullName" name="fullName" placeholder="Full name" aria-label="Full name" required />
+                <input type="email" id="email" name="email" placeholder="Email address" aria-label="Email address" required />
+              </div>
+
+              <div class="field-row">
+                <input type="tel" id="phone" name="phone" placeholder="Phone number" aria-label="Phone number" required />
+                <select id="position" name="position" aria-label="Position applying for" required>
+                  <option value="">Select a position</option>
+                  <option value="Cleaner">Cleaner</option>
+                  <option value="Team Supervisor">Team Supervisor</option>
+                  <option value="Office Support">Office Support</option>
+                  <option value="Contract Role">Contract Role</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
+
+              <textarea id="message" name="message" placeholder="Tell us about your experience, availability, and why you want to work with us..." aria-label="Tell us about your experience" required></textarea>
+
+              <div id="form-status" class="alert" role="status" aria-live="polite"></div>
+
+              <button class="btn" type="submit">Submit application</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Need to contact us directly?</h2>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Phone</h3>
+              <p>07858 015558</p>
+            </div>
+            <div class="info-card">
+              <h3>Email</h3>
+              <p>2aa.kwart@gmail.com</p>
+            </div>
+            <div class="info-card">
+              <h3>Location</h3>
+              <p>Slough, Berkshire, United Kingdom</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-box">
+        <div>
+          <h3>A-KWART CLEANING EXPERT LTD</h3>
+          <p>Professional Cleaning Services You Can Trust.</p>
+        </div>
+        <div>
+          <p>Serving Slough and customers across England and Wales.</p>
+          <p>Phone: 07858 015558</p>
+          <p>© 2026 A-Kwart Cleaning Expert Ltd.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.getElementById('career-form');
+      const statusBox = document.getElementById('form-status');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          statusBox.className = 'alert';
+          statusBox.textContent = 'Submitting your application...';
+
+          const response = await fetch('/api/careers', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Submission failed.');
+          }
+
+          statusBox.className = 'alert success';
+          statusBox.textContent = data.message || 'Application sent successfully.';
+          form.reset();
+        } catch (error) {
+          statusBox.className = 'alert error';
+          statusBox.textContent = error.message || 'There was a problem submitting your application.';
+        }
+      });
+    </script>
+  </body>
+</html>
+"path":"careers.html","content":"<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Careers | A-Kwart Cleaning Expert Ltd</title>
+    <meta
+      name="description"
+      content="Join the A-Kwart Cleaning Expert Ltd team. Apply for cleaning jobs and opportunities with our professional team."
+    />
+    <style>
+      :root {
+        --blue: #123b78;
+        --blue-2: #1d4f97;
+        --gold: #f4b942;
+        --gold-dark: #df9d20;
+        --dark: #17243a;
+        --muted: #64748b;
+        --ice: #edf5ff;
+        --white: #fff;
+        --card: #f8fbff;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f6f9ff;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+      a { text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 2px 12px rgba(17,24,39,0.07);
+        backdrop-filter: blur(8px);
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 82px;
+      }
+
+      .logo img {
+        width: 210px;
+        height: auto;
+      }
+
+      nav {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      nav a {
+        color: var(--dark);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 800;
+        padding: 14px 22px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+
+      .btn.white {
+        background: var(--white);
+        color: var(--blue);
+      }
+
+      .btn.outline {
+        background: transparent;
+        color: var(--white);
+        border-color: rgba(255,255,255,0.8);
+      }
+
+      .hero {
+        background: linear-gradient(120deg, #103d7a, #1f5da9 48%, #2f79c5);
+        color: var(--white);
+        padding: 72px 0;
+      }
+
+      .hero-wrap {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: #eaf3ff;
+        border-radius: 999px;
+        padding: 8px 14px;
+        margin-bottom: 18px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1.1;
+        margin-bottom: 18px;
+      }
+
+      .hero p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.04rem;
+        margin-bottom: 26px;
+        max-width: 640px;
+      }
+
+      .feature-box {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .feature-box h3 {
+        font-size: 1.1rem;
+      }
+
+      .feature-box ul {
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .feature-box li {
+        color: rgba(255,255,255,0.9);
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .section-heading {
+        text-align: center;
+        max-width: 760px;
+        margin: 0 auto 38px;
+      }
+
+      .section-heading h2 {
+        font-size: clamp(2rem, 4vw, 2.7rem);
+        color: var(--blue);
+        margin-bottom: 10px;
+      }
+
+      .section-heading p {
+        color: var(--muted);
+      }
+
+      .roles-grid, .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+
+      .role-card, .info-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 24px 22px;
+        border: 1px solid rgba(18,59,120,0.08);
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .role-card h3, .info-card h3 {
+        color: var(--blue);
+        margin-bottom: 8px;
+      }
+
+      .role-card p, .info-card p {
+        color: var(--muted);
+      }
+
+      .application-wrap {
+        display: grid;
+        grid-template-columns: 0.86fr 1.14fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      .apply-panel {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .apply-panel h3 {
+        color: var(--blue);
+        margin-bottom: 14px;
+      }
+
+      .apply-panel ul {
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+
+      .apply-panel li {
+        color: var(--dark);
+        font-weight: 700;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      input, textarea, select {
+        width: 100%;
+        border: 1px solid rgba(18,59,120,0.14);
+        background: #f9fbff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font: inherit;
+        color: var(--dark);
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      .alert {
+        display: none;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+
+      .alert.success {
+        display: block;
+        background: #eafaf0;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+      }
+
+      .alert.error {
+        display: block;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+
+      footer {
+        background: #0b2041;
+        color: rgba(255,255,255,0.9);
+        padding: 28px 0 36px;
+      }
+
+      .footer-box {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap, .application-wrap { grid-template-columns: 1fr; }
+        nav { display: none; }
+      }
+
+      @media (max-width: 700px) {
+        .field-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="/" class="logo" aria-label="A-Kwart Cleaning Expert Ltd home">
+          <img src="logo.svg" alt="A-Kwart Cleaning Expert Ltd Logo" />
+        </a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#services">Services</a>
+          <a href="/#contact">Contact</a>
+          <a href="/careers">Careers</a>
+          <a class="btn" href="/#contact">Book Now</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-wrap">
+          <div>
+            <div class="eyebrow">Join our team</div>
+            <h1>Work with a team that values reliability and excellence.</h1>
+            <p>
+              We’re looking for dedicated people who take pride in their work, care about detail,
+              and want to help create spotless, welcoming spaces for homes and businesses across
+              Slough and beyond.
+            </p>
+            <div class="cta-row">
+              <a class="btn white" href="#apply">Apply Now</a>
+              <a class="btn outline" href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">WhatsApp Hiring Team</a>
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <h3>Why join A-Kwart?</h3>
+            <ul>
+              <li>• Flexible working opportunities</li>
+              <li>• Supportive and professional team environment</li>
+              <li>• Clear standards and training for quality service</li>
+              <li>• Opportunities across domestic and commercial cleaning roles</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Available Opportunities</h2>
+            <p>We welcome applicants for both customer-facing and hands-on cleaning roles.</p>
+          </div>
+
+          <div class="roles-grid">
+            <div class="role-card">
+              <h3>Cleaner</h3>
+              <p>Domestic and commercial cleaning work with attention to detail and a strong work ethic.</p>
+            </div>
+            <div class="role-card">
+              <h3>Team Supervisor</h3>
+              <p>Lead staff, manage quality checks, and maintain professional service standards.</p>
+            </div>
+            <div class="role-card">
+              <h3>Office Support</h3>
+              <p>Support scheduling, client communication, and operational coordination.</p>
+            </div>
+            <div class="role-card">
+              <h3>Contract Roles</h3>
+              <p>Flexible daily, weekly, or project-based opportunities for skilled cleaners.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="apply">
+        <div class="container application-wrap">
+          <aside class="apply-panel">
+            <h3>What we look for</h3>
+            <ul>
+              <li>• Reliable and punctual team members</li>
+              <li>• Strong attention to detail</li>
+              <li>• Good communication and professionalism</li>
+              <li>• Willingness to work to a high standard</li>
+              <li>• Flexibility to meet client needs</li>
+            </ul>
+          </aside>
+
+          <div class="apply-panel">
+            <div class="section-heading" style="text-align:left; margin:0 0 22px; max-width:100%;">
+              <h2>Apply for a job</h2>
+              <p>Tell us about yourself and upload your CV. We’ll review your application and get back to you.</p>
+            </div>
+
+            <form id="career-form" enctype="multipart/form-data">
+              <div class="field-row">
+                <input type="text" id="fullName" name="fullName" placeholder="Full name" aria-label="Full name" required />
+                <input type="email" id="email" name="email" placeholder="Email address" aria-label="Email address" required />
+              </div>
+
+              <div class="field-row">
+                <input type="tel" id="phone" name="phone" placeholder="Phone number" aria-label="Phone number" required />
+                <select id="position" name="position" aria-label="Position applying for" required>
+                  <option value="">Select a position</option>
+                  <option value="Cleaner">Cleaner</option>
+                  <option value="Team Supervisor">Team Supervisor</option>
+                  <option value="Office Support">Office Support</option>
+                  <option value="Contract Role">Contract Role</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
+
+              <textarea id="message" name="message" placeholder="Tell us about your experience, availability, and why you want to work with us..." aria-label="Tell us about your experience" required></textarea>
+
+              <div id="form-status" class="alert" role="status" aria-live="polite"></div>
+
+              <button class="btn" type="submit">Submit application</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Need to contact us directly?</h2>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Phone</h3>
+              <p>07858 015558</p>
+            </div>
+            <div class="info-card">
+              <h3>Email</h3>
+              <p>2aa.kwart@gmail.com</p>
+            </div>
+            <div class="info-card">
+              <h3>Location</h3>
+              <p>Slough, Berkshire, United Kingdom</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-box">
+        <div>
+          <h3>A-KWART CLEANING EXPERT LTD</h3>
+          <p>Professional Cleaning Services You Can Trust.</p>
+        </div>
+        <div>
+          <p>Serving Slough and customers across England and Wales.</p>
+          <p>Phone: 07858 015558</p>
+          <p>© 2026 A-Kwart Cleaning Expert Ltd.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.getElementById('career-form');
+      const statusBox = document.getElementById('form-status');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          statusBox.className = 'alert';
+          statusBox.textContent = 'Submitting your application...';
+
+          const response = await fetch('/api/careers', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Submission failed.');
+          }
+
+          statusBox.className = 'alert success';
+          statusBox.textContent = data.message || 'Application sent successfully.';
+          form.reset();
+        } catch (error) {
+          statusBox.className = 'alert error';
+          statusBox.textContent = error.message || 'There was a problem submitting your application.';
+        }
+      });
+    </script>
+  </body>
+</html>
+"},
+{"content":"{
   "name": "akwart-cleaning-ai-chatbot",
   "version": "1.0.0",
   "description": "AI-powered chatbot and enquiry system for A-Kwart Cleaning Expert Ltd",
@@ -10,6 +1490,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
+    "multer": "^2.0.0",
     "nodemailer": "^6.9.14",
     "openai": "^4.57.0"
   }
