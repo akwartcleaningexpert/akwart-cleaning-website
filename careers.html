@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Careers | A-Kwart Cleaning Expert Ltd</title>
+    <meta
+      name="description"
+      content="Apply for jobs with A-Kwart Cleaning Expert Ltd. Join our cleaning team and submit your CV."
+    />
+    <style>
+      :root {
+        --blue: #123b78;
+        --blue-2: #1d4f97;
+        --gold: #f4b942;
+        --gold-dark: #df9d20;
+        --dark: #17243a;
+        --muted: #64748b;
+        --ice: #edf5ff;
+        --white: #fff;
+        --card: #f8fbff;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f6f9ff;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+      a { text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 2px 12px rgba(17,24,39,0.07);
+        backdrop-filter: blur(8px);
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 82px;
+      }
+
+      .logo img {
+        width: 210px;
+        height: auto;
+      }
+
+      nav {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+      }
+
+      nav a {
+        color: var(--dark);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--dark);
+        font-weight: 800;
+        padding: 14px 22px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+
+      .btn.white {
+        background: var(--white);
+        color: var(--blue);
+      }
+
+      .btn.outline {
+        background: transparent;
+        color: var(--white);
+        border-color: rgba(255,255,255,0.8);
+      }
+
+      .hero {
+        background: linear-gradient(120deg, #103d7a, #1f5da9 48%, #2f79c5);
+        color: var(--white);
+        padding: 72px 0;
+      }
+
+      .hero-wrap {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 28px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: #eaf3ff;
+        border-radius: 999px;
+        padding: 8px 14px;
+        margin-bottom: 18px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1.1;
+        margin-bottom: 18px;
+      }
+
+      .hero p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.04rem;
+        margin-bottom: 26px;
+        max-width: 640px;
+      }
+
+      .feature-box {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .feature-box h3 {
+        font-size: 1.1rem;
+      }
+
+      .feature-box ul {
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .feature-box li {
+        color: rgba(255,255,255,0.9);
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .section-heading {
+        text-align: center;
+        max-width: 760px;
+        margin: 0 auto 38px;
+      }
+
+      .section-heading h2 {
+        font-size: clamp(2rem, 4vw, 2.7rem);
+        color: var(--blue);
+        margin-bottom: 10px;
+      }
+
+      .section-heading p {
+        color: var(--muted);
+      }
+
+      .roles-grid, .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+
+      .role-card, .info-card {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 24px 22px;
+        border: 1px solid rgba(18,59,120,0.08);
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .role-card h3, .info-card h3 {
+        color: var(--blue);
+        margin-bottom: 8px;
+      }
+
+      .role-card p, .info-card p {
+        color: var(--muted);
+      }
+
+      .application-wrap {
+        display: grid;
+        grid-template-columns: 0.86fr 1.14fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      .apply-panel {
+        background: var(--white);
+        border: 1px solid rgba(18,59,120,0.08);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 10px 24px rgba(18,59,120,0.04);
+      }
+
+      .apply-panel h3 {
+        color: var(--blue);
+        margin-bottom: 14px;
+      }
+
+      .apply-panel ul {
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+
+      .apply-panel li {
+        color: var(--dark);
+        font-weight: 700;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      input, textarea, select {
+        width: 100%;
+        border: 1px solid rgba(18,59,120,0.14);
+        background: #f9fbff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font: inherit;
+        color: var(--dark);
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      .alert {
+        display: none;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+
+      .alert.success {
+        display: block;
+        background: #eafaf0;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+      }
+
+      .alert.error {
+        display: block;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+
+      footer {
+        background: #0b2041;
+        color: rgba(255,255,255,0.9);
+        padding: 28px 0 36px;
+      }
+
+      .footer-box {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-wrap, .application-wrap { grid-template-columns: 1fr; }
+        nav { display: none; }
+      }
+
+      @media (max-width: 700px) {
+        .field-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="/" class="logo" aria-label="A-Kwart Cleaning Expert Ltd home">
+          <img src="logo.svg" alt="A-Kwart Cleaning Expert Ltd Logo" />
+        </a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#services">Services</a>
+          <a href="/#contact">Contact</a>
+          <a href="/careers">Careers</a>
+          <a class="btn" href="/#contact">Book Now</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-wrap">
+          <div>
+            <div class="eyebrow">Join our team</div>
+            <h1>Work with a team that values reliability and excellence.</h1>
+            <p>
+              We’re looking for dedicated people who take pride in their work, care about detail,
+              and want to help create spotless, welcoming spaces for homes and businesses across
+              Slough and beyond.
+            </p>
+            <div class="cta-row">
+              <a class="btn white" href="#apply">Apply Now</a>
+              <a class="btn outline" href="https://wa.me/447858015558" target="_blank" rel="noopener noreferrer">WhatsApp Hiring Team</a>
+            </div>
+          </div>
+
+          <div class="feature-box">
+            <h3>Why join A-Kwart?</h3>
+            <ul>
+              <li>• Flexible working opportunities</li>
+              <li>• Supportive and professional team environment</li>
+              <li>• Clear standards and training for quality service</li>
+              <li>• Opportunities across domestic and commercial cleaning roles</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Available Opportunities</h2>
+            <p>We welcome applicants for both customer-facing and hands-on cleaning roles.</p>
+          </div>
+
+          <div class="roles-grid">
+            <div class="role-card">
+              <h3>Cleaner</h3>
+              <p>Domestic and commercial cleaning work with attention to detail and a strong work ethic.</p>
+            </div>
+            <div class="role-card">
+              <h3>Team Supervisor</h3>
+              <p>Lead staff, manage quality checks, and maintain professional service standards.</p>
+            </div>
+            <div class="role-card">
+              <h3>Office Support</h3>
+              <p>Support scheduling, client communication, and operational coordination.</p>
+            </div>
+            <div class="role-card">
+              <h3>Contract Roles</h3>
+              <p>Flexible daily, weekly, or project-based opportunities for skilled cleaners.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="apply">
+        <div class="container application-wrap">
+          <aside class="apply-panel">
+            <h3>What we look for</h3>
+            <ul>
+              <li>• Reliable and punctual team members</li>
+              <li>• Strong attention to detail</li>
+              <li>• Good communication and professionalism</li>
+              <li>• Willingness to work to a high standard</li>
+              <li>• Flexibility to meet client needs</li>
+            </ul>
+          </aside>
+
+          <div class="apply-panel">
+            <div class="section-heading" style="text-align:left; margin:0 0 22px; max-width:100%;">
+              <h2>Apply for a job</h2>
+              <p>Tell us about yourself and upload your CV. We’ll review your application and get back to you.</p>
+            </div>
+
+            <form id="career-form" enctype="multipart/form-data">
+              <div class="field-row">
+                <input type="text" id="fullName" name="fullName" placeholder="Full name" aria-label="Full name" required />
+                <input type="email" id="email" name="email" placeholder="Email address" aria-label="Email address" required />
+              </div>
+
+              <div class="field-row">
+                <input type="tel" id="phone" name="phone" placeholder="Phone number" aria-label="Phone number" required />
+                <select id="position" name="position" aria-label="Position applying for" required>
+                  <option value="">Select a position</option>
+                  <option value="Cleaner">Cleaner</option>
+                  <option value="Team Supervisor">Team Supervisor</option>
+                  <option value="Office Support">Office Support</option>
+                  <option value="Contract Role">Contract Role</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required />
+
+              <textarea id="message" name="message" placeholder="Tell us about your experience, availability, and why you want to work with us..." aria-label="Tell us about your experience" required></textarea>
+
+              <div id="form-status" class="alert" role="status" aria-live="polite"></div>
+
+              <button class="btn" type="submit">Submit application</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Need to contact us directly?</h2>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Phone</h3>
+              <p>07858 015558</p>
+            </div>
+            <div class="info-card">
+              <h3>Email</h3>
+              <p>2aa.kwart@gmail.com</p>
+            </div>
+            <div class="info-card">
+              <h3>Location</h3>
+              <p>Slough, Berkshire, United Kingdom</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-box">
+        <div>
+          <h3>A-KWART CLEANING EXPERT LTD</h3>
+          <p>Professional Cleaning Services You Can Trust.</p>
+        </div>
+        <div>
+          <p>Serving Slough and customers across England and Wales.</p>
+          <p>Phone: 07858 015558</p>
+          <p>© 2026 A-Kwart Cleaning Expert Ltd.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.getElementById('career-form');
+      const statusBox = document.getElementById('form-status');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+          statusBox.className = 'alert';
+          statusBox.textContent = 'Submitting your application...';
+
+          const response = await fetch('/api/careers', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Submission failed.');
+          }
+
+          statusBox.className = 'alert success';
+          statusBox.textContent = data.message || 'Application sent successfully.';
+          form.reset();
+        } catch (error) {
+          statusBox.className = 'alert error';
+          statusBox.textContent = error.message || 'There was a problem submitting your application.';
+        }
+      });
+    </script>
+  </body>
+</html>
